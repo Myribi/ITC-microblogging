@@ -1,58 +1,32 @@
 import "bootstrap/dist/css/bootstrap.min.css";
 import "./App.css";
-import CreateTweet from "./components/CreateTweet";
-import { useState, useEffect } from "react";
-import TweetList from "./components/TweetList";
-import axios from "axios";
-import Spinner from "react-bootstrap/Spinner";
+// import { useState } from "react";
+import NavBar from "./components/NavBar";
+import Profile from "./components/Profile";
+import Home from "./components/Home"
+import { BrowserRouter, Routes, Route} from "react-router-dom";
+import useLocalStorage from "./hooks/useLocalStorage"
+
 
 function App() {
-  const [tweets, setTweetsList] = useState([]);
-  const [loader, setLoader] = useState(false);
-  const [errorMessage, seterrorMessage] = useState("")
+  const [userName, setuserName] = useLocalStorage("Myriam")
 
-  const addTweets = (PostTweet) => {
-    setTweetsList((prev) => [PostTweet, ...prev]);
-    setLoader(false);
-  };
-
-  useEffect(() => {
-    
-          (async () => {
-      const { data } = await axios.get(
-        "https://micro-blogging-dot-full-stack-course-services.ew.r.appspot.com/tweet"
-      );
-      setTweetsList(data.tweets);
-    })();
-  
-  }, []);
-
-  const errorFunc = (error) => {
-    seterrorMessage(error)
+  function handleUserName(value) {
+    setuserName(value);
   }
 
   return (
-    <div className="App">
-       
-      <CreateTweet
-        tweets={tweets}
-        addTweets={addTweets}
-        setLoader={setLoader}
-        errorFunc= {errorFunc}
-        seterrorMessage={seterrorMessage}
-        
-      />
-      
-      <Spinner
-        id="loader"
-        animation="grow"
-        variant="info"
-        className={loader ? "my-2" : "d-none"}
-      />
-      {errorMessage !== "" ?<div className="text-danger mb-2 serverError">Oh no, there's seems to be a problem! Try again in a few minutes.</div> : ""}
-      <TweetList tweets={tweets} setTweetsList={setTweetsList} />
-    </div>
-  );
+    <>
+   
+    <BrowserRouter>
+     <NavBar/>
+     <Routes>
+       <Route path="/" element={<Home userName={userName} setuserName={setuserName} />} />
+       <Route path="/profile" element={<Profile userName={userName} setuserName={handleUserName} />} />
+     </Routes>
+   </BrowserRouter>
+    </>
+  )
 }
 
 export default App;

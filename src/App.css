@@ -5,7 +5,7 @@ body {
 form {
   margin-right: 25%;
   margin-left: 25%;
-  margin-top: 2%;
+  margin-top: 6rem;
   border: white solid;
   border-radius: 5px;
   padding: 2%;
@@ -48,4 +48,55 @@ textarea:focus{
   text-align: center;
 }
 
+.nav {
+  position: sticky;
+  top: 0;
+  margin: 0 15%;
+  background-color: #343A40;
+  display: flex;
+  align-items: center;
+  gap: 30px;
+  padding: 1% 2%;
+  border-radius: 5px;
+  position: fixed;
+  top:0;
+  z-index: 1;
+  width: 70%;
+}
 
+.link{ 
+  text-decoration: none;
+  color :rgba(255, 255, 255, 0.5);
+}
+.active {
+  color: white;
+  text-decoration: none;
+}
+
+.link:hover {
+  color:white; ;
+}
+
+.profile {
+  margin-top: 7rem;
+  margin-left: 25%;
+  margin-right: 25%;
+  
+
+}
+
+.saveBtn {
+  display: flex;
+  justify-content: flex-end;
+}
+
+input {
+  background: none;
+  border: white solid 1px;
+  border-radius: 5px;
+  padding: 10px;
+  color: white;
+}
+input:focus {
+  outline: none;
+}

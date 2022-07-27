@@ -6,6 +6,7 @@ import axios from "axios";
 export default function CreateTweet(props) {
   const [tweet, setTweet] = useState("");
   const [disabled, setDisabled] = useState(false);
+  
 
 
   const changeTweet = (e) => {
@@ -14,6 +15,7 @@ export default function CreateTweet(props) {
   };
 
   const addHandler = async (e) => {
+    
     e.preventDefault();
     props.seterrorMessage( "")
     try {
@@ -21,7 +23,7 @@ export default function CreateTweet(props) {
         props.setLoader(true);
         const PostTweet = {
           content: tweet,
-          userName: "Myriam",
+          userName: props.userName,
           date: new Date().toISOString(),
         };
        const res = await axios.post(
@@ -29,9 +31,8 @@ export default function CreateTweet(props) {
           PostTweet
 
         );
-        console.log(res)
-        setTweet("");
         
+        setTweet("");
         props.addTweets(res.data);
       }
     } catch (error) {
@@ -39,6 +40,8 @@ export default function CreateTweet(props) {
      props.setLoader(false)
     }
   };
+
+
 
   return (
     <>
