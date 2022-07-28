@@ -8,7 +8,7 @@ import { BrowserRouter, Routes, Route } from "react-router-dom";
 import useLocalStorage from "./hooks/useLocalStorage";
 
 function App() {
-  const [userName, setuserName] = useLocalStorage("Myriam");
+  const [userName, setuserName] = useLocalStorage("Myriam","");
   
   function handleUserName(value) {
     setuserName(value);
