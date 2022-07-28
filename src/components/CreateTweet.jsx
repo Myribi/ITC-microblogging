@@ -1,11 +1,14 @@
 import Button from "react-bootstrap/Button";
 import { useState } from "react";
 import axios from "axios";
+import CreateTweetContext from "../contexts/CreateTweetContext";
+import { useContext } from "react";
 
 
 export default function CreateTweet(props) {
   const [tweet, setTweet] = useState("");
   const [disabled, setDisabled] = useState(false);
+  const {addTweets, setLoader, errorFunc,seterrorMessage} = useContext(CreateTweetContext)
   
 
 
@@ -17,10 +20,10 @@ export default function CreateTweet(props) {
   const addHandler = async (e) => {
     
     e.preventDefault();
-    props.seterrorMessage( "")
+    seterrorMessage( "")
     try {
       if (tweet !== "") {
-        props.setLoader(true);
+        setLoader(true);
         const PostTweet = {
           content: tweet,
           userName: props.userName,
@@ -33,11 +36,11 @@ export default function CreateTweet(props) {
         );
         
         setTweet("");
-        props.addTweets(res.data);
+        addTweets(res.data);
       }
     } catch (error) {
-     props.errorFunc(error.message)
-     props.setLoader(false)
+     errorFunc(error.message)
+     setLoader(false)
     }
   };
 

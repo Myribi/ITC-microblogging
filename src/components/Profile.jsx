@@ -17,7 +17,7 @@ function changeUserName () {
       <h1 className=" title text-white">Profile</h1>
       <div className="text-white">User Name</div>
       <div className="saveBtn d-flex flex-column w-100">
-        <input className="profile-input" defaultValue={props.userName} onChange={changeInput}></input>
+        <input className="profile-input" maxLength={20} defaultValue={props.userName} onChange={changeInput}></input>
 
         <div className="saveBtn">
           <Button
