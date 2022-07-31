@@ -1,8 +1,9 @@
 import Button from "react-bootstrap/Button";
 import { useState } from "react";
-import axios from "axios";
 import CreateTweetContext from "../contexts/CreateTweetContext";
 import { useContext } from "react";
+import { collection, addDoc} from "firebase/firestore"; 
+import db from "../fireStore";
 
 
 export default function CreateTweet(props) {
@@ -28,15 +29,12 @@ export default function CreateTweet(props) {
           content: tweet,
           userName: props.userName,
           date: new Date().toISOString(),
-        };
-       const res = await axios.post(
-          "https://micro-blogging-dot-full-stack-course-services.ew.r.appspot.com/tweet",
-          PostTweet
-
-        );
-        
+          id : ""
+        }
+        await addDoc(collection(db, "tweet"),PostTweet );
+    
         setTweet("");
-        addTweets(res.data);
+        addTweets(PostTweet);
       }
     } catch (error) {
      errorFunc(error.message)
