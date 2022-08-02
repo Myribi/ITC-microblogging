@@ -4,7 +4,7 @@ import { useState, useEffect } from "react";
 import TweetList from "./TweetList";
 import Spinner from "react-bootstrap/Spinner";
 import CreateTweetContext from "../contexts/CreateTweetContext";
-import { collection, onSnapshot, query, orderBy, limit } from "firebase/firestore";
+import { collection, onSnapshot, query, orderBy, limit, getDoc, doc } from "firebase/firestore";
 import {db }from "../fireStore";
 import useUser from "../hooks/useUser";
 
@@ -17,14 +17,16 @@ function Home(props) {
   const {userName, setUserName} = useUser();
 
   useEffect(() => {
-    onSnapshot(q, (snapshot) => {
-      let list = [];
-      snapshot.docs.forEach((doc) => {
-        list.push({ ...doc.data(), id: doc.id });
-      });
+    onSnapshot(q, async(snapshot) => {
+      const list =  await Promise.all(snapshot?.docs.map(async(document) => {
+        const tweetData = document.data()
+        const user = await getDoc(doc(db,"users",tweetData.id))
+        const userData = user?.data()
+        return({ ...document.data(), id: document.id , userName:userData ? userData.userName : ""});
+      }))
       setTweetsList(list);
     });
-  });
+  },[]);
 
   const addTweets = (PostTweet) => {
     setTweetsList((prev) => [PostTweet, ...prev]);

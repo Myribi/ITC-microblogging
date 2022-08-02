@@ -105,3 +105,8 @@ input:focus {
   color: white;
   padding: 2% 5%;
 }
+
+.title {
+  color: white;
+  margin-top: 6rem;
+}

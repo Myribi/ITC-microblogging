@@ -10,7 +10,7 @@ export default function CreateTweet() {
   const [tweet, setTweet] = useState("");
   const [disabled, setDisabled] = useState(false);
   const {addTweets, setLoader, errorFunc,seterrorMessage} = useContext(CreateTweetContext)
-  const {userName} = useUser();
+  const {userId} = useUser();
   
 
 
@@ -28,14 +28,14 @@ export default function CreateTweet() {
         setLoader(true);
         const PostTweet = {
           content: tweet,
-          userName: userName,
+          // userName: userName,
           date: new Date().toISOString(),
-          id : ""
+          id : userId
         }
         await addDoc(collection(db, "tweet"),PostTweet );
     
         setTweet("");
-        addTweets(PostTweet);
+        setLoader(false);
       }
     } catch (error) {
      errorFunc(error.message)

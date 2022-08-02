@@ -3,27 +3,52 @@ import UserContext from "../contexts/UserContext";
 import { auth } from "../fireStore";
 import {
   createUserWithEmailAndPassword,
-  signInWithEmailAndPassword, updateProfile,
+  signInWithEmailAndPassword,
+  signInWithPopup,
+  GoogleAuthProvider,
+  signOut,
+  signInWithRedirect,
 } from "firebase/auth";
+import { setDoc, doc } from "firebase/firestore";
+import { db } from "../fireStore";
 
 export default function UserContextProvider(props) {
   const { children } = props;
   const [userId, setUserId] = useState("");
   const [userEmail, setUserEmail] = useState("");
   const [userName, setUserName] = useState("");
-  
 
-  const login = async ( userEmail, passwordLog) => {
+  const signInWithGoogle = () => {
+    const provider = new GoogleAuthProvider();
+    signInWithPopup(auth, provider)
+      .then((result) => {
+        const credential = GoogleAuthProvider.credentialFromResult(result);
+        const token = credential.accessToken;
+        const user = result.user;
+        console.log(user)
+        setUserId(user.uid)
+        setUserEmail(user.email)
+        setUserName(user.displayName)
+      })
+      .catch((error) => {
+        const errorCode = error.code;
+        const errorMessage = error.message;
+        const email = error.customData.email;
+        const credential = GoogleAuthProvider.credentialFromError(error);
+      });
+  };
+
+  const login = async (userEmail, passwordLog) => {
     try {
-    await signInWithEmailAndPassword(auth, userEmail,passwordLog ) 
-    setUserId(auth.currentUser.uid);
-    setUserEmail(auth.currentUser.email);
-    setUserName(auth.currentUser.displayName);
+      await signInWithEmailAndPassword(auth, userEmail, passwordLog);
+      setUserId(auth.currentUser.uid);
+      setUserEmail(auth.currentUser.email);
+      setUserName(auth.currentUser.displayName);
     } catch (error) {
-     const err = error.code
-     console.log(err)
-     const errmessage = error.message
-     console.log(errmessage)
+      const err = error.code;
+      console.log(err);
+      const errmessage = error.message;
+      console.log(errmessage);
     }
   };
 
@@ -39,16 +64,29 @@ export default function UserContextProvider(props) {
     setUserName(newName);
   };
 
-  const register = async (userName, userEmail, password) => {
-    
-    await createUserWithEmailAndPassword(auth, userEmail, password)
-    setUserName("")
-    await updateProfile(auth.currentUser, {displayName: userName})
-    login(userEmail, password)
-    
+  const register = async (password) => {
+    console.log(userEmail);
+    const data = await createUserWithEmailAndPassword(
+      auth,
+      userEmail,
+      password
+    );
+    const newUser = {
+      email: data.user.email,
+      userName,
+      profilePic: data.user.photoURL,
+    };
+    await setDoc(doc(db, "users", data.user.uid), newUser);
+
+    // await updateProfile(auth.currentUser, {displayName: userName})
   };
 
-  const signout = async () => {};
+  const signout = () => {
+    console.log("plop")
+    signOut(auth);
+    setUserId("");
+  };
+
   return (
     <UserContext.Provider
       value={{
@@ -61,7 +99,8 @@ export default function UserContextProvider(props) {
         updateUserName,
         emailChange,
         userSign,
-        setUserName
+        setUserName,
+        signInWithGoogle,
       }}
     >
       {children}

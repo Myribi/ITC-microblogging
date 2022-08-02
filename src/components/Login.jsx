@@ -4,8 +4,10 @@ import Button from "react-bootstrap/Button";
 import { useNavigate } from "react-router-dom";
 import useUser from "../hooks/useUser";
 
+
+
 export default function Login() {
-  const { login, userId, userEmail, emailChange } = useUser();
+  const { login, userId, userEmail, emailChange,signInWithGoogle } = useUser();
   const [passwordLog, setPasswordLog] = useState("");
   const navigate = useNavigate();
 
@@ -18,11 +20,17 @@ export default function Login() {
     login(userEmail, passwordLog);
   };
 
-  // const loggedOut = async (e) => {
-  //   signOut(auth).then(() => {
-  //     console.log("signed out");
-  //   });
-  // };
+  const googleLog = async (e) => {
+    e.preventDefault();
+    try {
+    signInWithGoogle();
+    } catch (error) {
+      console.log("plop",error)
+    }
+  };
+
+
+
 
   useEffect(() => {
     if (userId) navigate("/");
@@ -30,6 +38,9 @@ export default function Login() {
 
   return (
     <>
+    <div className="d-flex justify-content-center title">
+    <h1 >Login</h1>
+    </div>
       <form className="login d-flex flex-column " onSubmit={loggedIn}>
         <label>Email: </label>
         <input type="email" name="email" className="mb-3" onChange={emailChange}></input>
@@ -43,7 +54,9 @@ export default function Login() {
         <Button variant="primary" type="submit" className="btn ms-auto mt-4">
           Login
         </Button>
+        <button onClick={googleLog} >Sign in with google </button>
       </form>
+        
       {/* <Button
         variant="primary"
         type=""
