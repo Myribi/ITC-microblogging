@@ -4,36 +4,49 @@ import NavBar from "./components/NavBar";
 import Profile from "./components/Profile";
 import Home from "./components/Home";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
-import useLocalStorage from "./hooks/useLocalStorage";
+import NewUser from "./components/NewUser";
+import Login from "./components/Login";
+import UserContextProvider from "./components/UserContextProvider";
+import PrivateRoute from "./components/PrivateRoute";
 
 
 
 function App() {
-  const [userName, setuserName] = useLocalStorage("Myriam","");
+ 
   
-  function handleUserName(value) {
-    setuserName(value);
-  }
+
+  // function handleUserName(value) {
+  //   setuserName(value);
+  // }
 
   return (
     <>
-      
+      <UserContextProvider>
         <BrowserRouter>
           <NavBar />
           <Routes>
             <Route
               path="/"
-              element={<Home userName={userName} setuserName={setuserName} />}
+              element={ <PrivateRoute ><Home  /></PrivateRoute>}
             />
             <Route
               path="/profile"
               element={
-                <Profile userName={userName} setuserName={handleUserName} />
+                <PrivateRoute >
+                <Profile />
+                </PrivateRoute>
               }
             />
+            <Route
+              path="/newuser"
+              element={
+                <NewUser/>
+              }
+            />
+            <Route path="/login" element={<Login/>} />
           </Routes>
         </BrowserRouter>
-     
+      </UserContextProvider>
     </>
   );
 }

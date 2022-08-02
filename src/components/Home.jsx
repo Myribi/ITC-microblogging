@@ -4,17 +4,20 @@ import { useState, useEffect } from "react";
 import TweetList from "./TweetList";
 import Spinner from "react-bootstrap/Spinner";
 import CreateTweetContext from "../contexts/CreateTweetContext";
-import { collection, onSnapshot } from "firebase/firestore";
-import db from "../fireStore";
+import { collection, onSnapshot, query, orderBy, limit } from "firebase/firestore";
+import {db }from "../fireStore";
+import useUser from "../hooks/useUser";
 
 function Home(props) {
   const [tweets, setTweetsList] = useState([]);
   const [loader, setLoader] = useState(false);
   const [errorMessage, seterrorMessage] = useState("");
   const colRef = collection(db, "tweet");
+  const q = query(colRef, orderBy("date", "desc"),limit(10))
+  const {userName, setUserName} = useUser();
 
   useEffect(() => {
-    onSnapshot(colRef, (snapshot) => {
+    onSnapshot(q, (snapshot) => {
       let list = [];
       snapshot.docs.forEach((doc) => {
         list.push({ ...doc.data(), id: doc.id });
@@ -47,8 +50,8 @@ function Home(props) {
       >
         <div className="App">
           <CreateTweet
-            userName={props.userName}
-            setuserName={props.setuserName}
+            userName={userName}
+            setuserName={setUserName}
           />
 
           <Spinner

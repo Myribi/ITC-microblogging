@@ -1,15 +1,17 @@
 import Button from "react-bootstrap/Button";
 import React, { useState } from "react";
+import useUser from "../hooks/useUser";
 
 export default function Profile(props) {
   const [input, setInput] = useState("");
+  const {setUserName } = useUser();
 
   function changeInput(e) {
     setInput(e.target.value);
   }
 
 function changeUserName () {
-  props.setuserName(input)
+  setUserName(input)
 }
 
   return (

@@ -3,13 +3,14 @@ import { useState } from "react";
 import CreateTweetContext from "../contexts/CreateTweetContext";
 import { useContext } from "react";
 import { collection, addDoc} from "firebase/firestore"; 
-import db from "../fireStore";
+import {db} from "../fireStore";
+import useUser from "../hooks/useUser";
 
-
-export default function CreateTweet(props) {
+export default function CreateTweet() {
   const [tweet, setTweet] = useState("");
   const [disabled, setDisabled] = useState(false);
   const {addTweets, setLoader, errorFunc,seterrorMessage} = useContext(CreateTweetContext)
+  const {userName} = useUser();
   
 
 
@@ -27,7 +28,7 @@ export default function CreateTweet(props) {
         setLoader(true);
         const PostTweet = {
           content: tweet,
-          userName: props.userName,
+          userName: userName,
           date: new Date().toISOString(),
           id : ""
         }
