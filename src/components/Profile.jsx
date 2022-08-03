@@ -34,25 +34,27 @@ export default function Profile() {
     setInput("");
   };
 
-
-
   return (
     <div className="profile">
       <h1 className=" title text-white">Profile</h1>
-     { profileImage && (<div>
-        <img src={profileImage} style={{ height: 100 }} />
-      </div>)}
-      <Form.Control type="file" onChange={changePhoto} />
-      <div className="text-white">User Name</div>
+      {profileImage && (
+        <div>
+          <img src={profileImage} style={{ height: 100 }} />
+        </div>
+      )}
+
+      <div className="text-white">Change user name:</div>
+
       <div className="saveBtn d-flex flex-column w-100">
         <input
-          className="profile-input"
+          className="profile-input mb-4"
           maxLength={20}
           value={input}
           onChange={changeInput}
         ></input>
-
-        <div className="saveBtn">
+        <div className="text-white">Change profile picture:</div>
+        <Form.Control type="file" onChange={changePhoto} />
+        <div className="saveBtn mt-4">
           <Button onClick={profileUserName} variant="primary" type="submit">
             Save
           </Button>
