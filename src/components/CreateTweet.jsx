@@ -9,8 +9,8 @@ import useUser from "../hooks/useUser";
 export default function CreateTweet() {
   const [tweet, setTweet] = useState("");
   const [disabled, setDisabled] = useState(false);
-  const {addTweets, setLoader, errorFunc,seterrorMessage} = useContext(CreateTweetContext)
-  const {userId} = useUser();
+  const {setLoader, errorFunc,seterrorMessage} = useContext(CreateTweetContext)
+  const {userId, userName} = useUser();
   
 
 
@@ -30,14 +30,16 @@ export default function CreateTweet() {
           content: tweet,
           // userName: userName,
           date: new Date().toISOString(),
-          id : userId
+          id : userId.uid
         }
+        console.log(PostTweet)
         await addDoc(collection(db, "tweet"),PostTweet );
     
         setTweet("");
         setLoader(false);
       }
     } catch (error) {
+      console.log(error)
      errorFunc(error.message)
      setLoader(false)
     }
@@ -54,7 +56,7 @@ export default function CreateTweet() {
         <textarea
           maxLength={142}
           type="text"
-          placeholder="What's on your mind..."
+          placeholder={"Hey" + " " + userName + " " + "what's on your mind today..."}
           style={{ height: "100px" }}
           className=""
           value={tweet}

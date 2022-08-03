@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import UserContext from "../contexts/UserContext";
 import { auth } from "../fireStore";
 import {
@@ -7,10 +7,12 @@ import {
   signInWithPopup,
   GoogleAuthProvider,
   signOut,
-  signInWithRedirect,
+  updateProfile,
+  onAuthStateChanged
 } from "firebase/auth";
-import { setDoc, doc } from "firebase/firestore";
+import { setDoc, doc, updateDoc } from "firebase/firestore";
 import { db } from "../fireStore";
+
 
 export default function UserContextProvider(props) {
   const { children } = props;
@@ -18,23 +20,26 @@ export default function UserContextProvider(props) {
   const [userEmail, setUserEmail] = useState("");
   const [userName, setUserName] = useState("");
 
+    useEffect(() => {
+        onAuthStateChanged(auth, (user) => {
+            setUserId(user);
+        });
+    }, []);
+
   const signInWithGoogle = () => {
     const provider = new GoogleAuthProvider();
     signInWithPopup(auth, provider)
       .then((result) => {
-        const credential = GoogleAuthProvider.credentialFromResult(result);
-        const token = credential.accessToken;
         const user = result.user;
-        console.log(user)
-        setUserId(user.uid)
-        setUserEmail(user.email)
-        setUserName(user.displayName)
+        setUserId(user.uid);
+        setUserEmail(user.email);
+        setUserName(user.displayName);
       })
       .catch((error) => {
-        const errorCode = error.code;
-        const errorMessage = error.message;
-        const email = error.customData.email;
-        const credential = GoogleAuthProvider.credentialFromError(error);
+        const err = error.code;
+        console.log(err);
+        const errmessage = error.message;
+        console.log(errmessage);
       });
   };
 
@@ -60,12 +65,22 @@ export default function UserContextProvider(props) {
     setUserName(e.target.value);
   };
 
-  const updateUserName = (newName) => {
+  const updateUserName = async (newName) => {
     setUserName(newName);
+    try {
+      await updateProfile(auth.currentUser, { displayName: newName });
+      await updateDoc(doc(db, "users", auth.currentUser.uid), {
+        userName: newName,
+      });
+    } catch (error) {
+      const err = error.code;
+      console.log(err);
+      const errmessage = error.message;
+      console.log(errmessage);
+    }
   };
 
   const register = async (password) => {
-    console.log(userEmail);
     const data = await createUserWithEmailAndPassword(
       auth,
       userEmail,
@@ -77,12 +92,12 @@ export default function UserContextProvider(props) {
       profilePic: data.user.photoURL,
     };
     await setDoc(doc(db, "users", data.user.uid), newUser);
-
-    // await updateProfile(auth.currentUser, {displayName: userName})
+    console.log(newUser);
+    await updateProfile(auth.currentUser, { displayName: userName });
+    console.log(userName);
   };
 
   const signout = () => {
-    console.log("plop")
     signOut(auth);
     setUserId("");
   };

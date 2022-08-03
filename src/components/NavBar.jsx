@@ -1,12 +1,8 @@
 import React from "react";
 import { Link, useLocation } from "react-router-dom";
 import { useState, useEffect } from "react";
-import { useContext } from "react";
-import UserContext from "../contexts/UserContext";
-import { Button } from "react-bootstrap";
 import useUser from "../hooks/useUser";
-import {signOut } from "firebase/auth";
-import { auth } from "../fireStore";
+import Button from "react-bootstrap/Button";
 
 
 
@@ -57,9 +53,12 @@ export default function NavBar() {
               </li>
               </>
             )}
+            {userId &&( <Button variant="primary" className="btn ms-auto" onClick={signout}>Log out</Button> )}
       </ul>
-      {userId &&( <button onClick={signout}>log out</button> )}
+      
     </div>
   );
 }
+
+
 

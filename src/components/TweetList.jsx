@@ -9,6 +9,7 @@ export default function TweetList() {
       {tweets.map((item) => (
         <div className=" card shadow mb-2 p-3" key={item.id}>
           <div className="d-flex justify-content-between mb-3 text-secondary">
+          <img  className="avatar" src={item.profilePic} />
             <div className="first-name">{item.userName}</div>
             <div className="date">{item.date}</div>
           </div>
