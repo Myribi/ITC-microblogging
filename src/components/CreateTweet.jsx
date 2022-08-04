@@ -3,7 +3,7 @@ import { useState } from "react";
 import CreateTweetContext from "../contexts/CreateTweetContext";
 import { useContext } from "react";
 import { collection, addDoc} from "firebase/firestore"; 
-import {db} from "../fireStore";
+import {db,auth} from "../fireStore";
 import useUser from "../hooks/useUser";
 
 export default function CreateTweet() {
@@ -30,11 +30,12 @@ export default function CreateTweet() {
           content: tweet,
           // userName: userName,
           date: new Date().toISOString(),
-          id : userId.uid
+          id: userId.uid ? userId.uid : auth.currentUser.uid
+         
         }
-        console.log(PostTweet)
+        console.log(userId.uid)
+        console.log("auth", auth)
         await addDoc(collection(db, "tweet"),PostTweet );
-    
         setTweet("");
         setLoader(false);
       }

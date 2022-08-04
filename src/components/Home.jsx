@@ -22,7 +22,6 @@ function Home(props) {
   const [tweets, setTweetsList] = useState([]);
   const [loader, setLoader] = useState(false);
   const [errorMessage, seterrorMessage] = useState("");
-  
   const { userName, setUserName } = useUser();
 
   useEffect(() => {
@@ -90,7 +89,7 @@ function Home(props) {
         }}
       >
         <div className="App">
-          <CreateTweet userName={userName} setuserName={setUserName} />
+          <CreateTweet userName={userName} setuserName={setUserName}/>
 
           <Spinner
             id="loader"
